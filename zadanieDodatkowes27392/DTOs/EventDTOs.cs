@@ -19,7 +19,6 @@ public class EventCreateDto
 public class EventGetDto
 {
     [Required]
-    [MaxLength(100)]
     public int Id { get; set; }
     [Required]
     [MaxLength(200)]

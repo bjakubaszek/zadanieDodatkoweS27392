@@ -121,8 +121,10 @@ public class DbService(AppDbContext data) : IDbService
                     FirstName = es.Speaker.FirstName,
                     LastName = es.Speaker.LastName
                 }).ToList()
-            }).ToListAsync();
+            })
+            .ToListAsync();
     }
+
 
     public async Task<ICollection<ParticipantEventReportDto>> GetParticipantReportAsync(int participantId)
     {
