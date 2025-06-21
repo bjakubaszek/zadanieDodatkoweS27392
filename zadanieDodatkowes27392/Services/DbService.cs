@@ -19,6 +19,10 @@ public class DbService(AppDbContext data) : IDbService
 {
     public async Task<EventGetDto> CreateEventAsync(EventCreateDto dto)
     {
+        
+        // 1. Nie mozna do tylu
+        // 2. profit
+        
         if (dto.Date <= DateTime.UtcNow)
             throw new BadRequestException("Date must be in the future.");
             
@@ -46,10 +50,16 @@ public class DbService(AppDbContext data) : IDbService
 
     public async Task AddSpeakerToEventAsync(int eventId, int speakerId)
     {
+        
+        // 1. Event istnieje
+        // 2. speaker istnieje
+        // 3. nie ma konfliku
+        // 4. profit
+        
+        
         var ev = await data.Events.FindAsync(eventId) ?? throw new NotFoundException($"Event {eventId} not found");
         var speaker = await data.Speakers.FindAsync(speakerId) ?? throw new NotFoundException($"Speaker {speakerId} not found");
 
-        // Sprawdzenie konfliktu terminu
         bool hasConflict = await data.EventSpeakers
             .Include(es => es.Event)
             .AnyAsync(es => es.SpeakerId == speakerId && es.Event.Date == ev.Date);
@@ -62,6 +72,12 @@ public class DbService(AppDbContext data) : IDbService
 
     public async Task<RegistrationResultDto> RegisterParticipantAsync(int eventId, int participantId)
     {
+        
+        // 1. event istnieje
+        // 2. Liczba uczestnikow sie zgadza
+        // 3. Czy on juz jest zarejestrowany
+        // 4. profit
+        
         var ev = await data.Events.Include(x => x.EventParticipants).FirstOrDefaultAsync(x => x.Id == eventId) ?? 
             throw new NotFoundException($"Event {eventId} not found");
 
@@ -89,6 +105,12 @@ public class DbService(AppDbContext data) : IDbService
 
     public async Task CancelRegistrationAsync(int eventId, int participantId)
     {
+        
+        // 1. Event istnieje
+        // 2. MOzna cancelowac tlyko 24h przed
+        // 3. gosc nie jest zapisany
+        // 4. profit
+        
         var ev = await data.Events.FindAsync(eventId) ?? 
             throw new NotFoundException($"Event {eventId} not found");
 
